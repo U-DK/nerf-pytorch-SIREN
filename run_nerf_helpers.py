@@ -46,6 +46,7 @@ class Embedder:
 
 
 def get_embedder(multires, i=0):
+    return nn.Identity(), 3
     if i == -1:
         return nn.Identity(), 3
     
@@ -71,7 +72,7 @@ class NeRF(nn.Module):
         super(NeRF, self).__init__()
         self.D = D
         self.W = W
-        self.input_ch = input_ch
+        self.input_ch = torch.sin(30*input_ch)
         self.input_ch_views = input_ch_views
         self.skips = skips
         self.use_viewdirs = use_viewdirs
@@ -98,7 +99,7 @@ class NeRF(nn.Module):
         h = input_pts
         for i, l in enumerate(self.pts_linears):
             h = self.pts_linears[i](h)
-            h = F.relu(h)
+            h = torch.sin(h)
             if i in self.skips:
                 h = torch.cat([input_pts, h], -1)
 
@@ -109,7 +110,7 @@ class NeRF(nn.Module):
         
             for i, l in enumerate(self.views_linears):
                 h = self.views_linears[i](h)
-                h = F.relu(h)
+                h = torch.sin(h)
 
             rgb = self.rgb_linear(h)
             outputs = torch.cat([rgb, alpha], -1)
