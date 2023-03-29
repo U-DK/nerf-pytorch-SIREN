@@ -72,7 +72,7 @@ class NeRF(nn.Module):
         super(NeRF, self).__init__()
         self.D = D
         self.W = W
-        self.input_ch = torch.sin(30*input_ch)
+        self.input_ch = input_ch
         self.input_ch_views = input_ch_views
         self.skips = skips
         self.use_viewdirs = use_viewdirs
@@ -97,6 +97,7 @@ class NeRF(nn.Module):
     def forward(self, x):
         input_pts, input_views = torch.split(x, [self.input_ch, self.input_ch_views], dim=-1)
         h = input_pts
+        h = torch.sin(30*input_ch)
         for i, l in enumerate(self.pts_linears):
             h = self.pts_linears[i](h)
             h = torch.sin(h)
