@@ -100,6 +100,7 @@ class NeRF(nn.Module):
         h=torch.sin(input_pts)
         for i, l in enumerate(self.pts_linears):
             h = self.pts_linears[i](h)
+            #h = F.relu(h)
             h = torch.sin(h)
             if i in self.skips:
                 h = torch.cat([input_pts, h], -1)
@@ -111,6 +112,7 @@ class NeRF(nn.Module):
         
             for i, l in enumerate(self.views_linears):
                 h = self.views_linears[i](h)
+                #h = F.relu(h)
                 h = torch.sin(h)
 
             rgb = self.rgb_linear(h)
