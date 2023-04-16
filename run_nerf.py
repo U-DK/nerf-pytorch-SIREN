@@ -7,6 +7,7 @@ import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import csv
 from tqdm import tqdm, trange
 
 import matplotlib.pyplot as plt
@@ -627,6 +628,11 @@ def train():
     expname = args.expname
     os.makedirs(os.path.join(basedir, expname), exist_ok=True)
     f = os.path.join(basedir, expname, 'args.txt')
+    fileCSV = os.path.join(basedir, expname, 'record.csv')
+    with open(fileCSV, 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["iter", "PSNR", "loss"])
+        csvfile.close()
     with open(f, 'w') as file:
         for arg in sorted(vars(args)):
             attr = getattr(args, arg)
@@ -827,6 +833,10 @@ def train():
     
         if i%args.i_print==0:
             tqdm.write(f"[TRAIN] Iter: {i} Loss: {loss.item()}  PSNR: {psnr.item()}")
+            with open(fileCSV, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow([i, psnr.item(), loss.item()])
+                csvfile.close()
         """
             print(expname, i, psnr.numpy(), loss.numpy(), global_step.numpy())
             print('iter time {:.05f}'.format(dt))
